@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title id="page-title" contenteditable="false">Sala de Juegos</title>
+<style>
+  /* Diseño general */
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    color: #222;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  #page-title {
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    outline: none;
+    color: #005f99;
+    transition: color 0.3s ease;
+  }
+  #page-title:hover {
+    color: #00406b;
+  }
+  #username-display {
+    font-size: 1em;
+    color: #555;
+    margin-top: 5px;
+  }
+  button {
+    background: #005f99;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 5px;
+    user-select: none;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #00406b;
+  }
+  #content {
+    flex-grow: 1;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 15px;
+    min-height: 300px;
+    overflow-wrap: break-word;
+    white-space: normal;
+    outline: none;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    position: relative;
+  }
+  #content[contenteditable="true"] {
+    user-select: text;
+    cursor: text;
+    border-color: #005f99;
+  }
+  #toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+  #editor-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+  #login-screen {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  #login-box {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 8px;
+    width: 280px;
+    box-shadow: 0 0 12px #333;
+    text-align: center;
+  }
+  #login-box h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #005f99;
+  }
+  #login-box input {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+  #login-box button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background: #005f99;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #login-box button:hover {
+    background: #00406b;
+  }
+  #sugerencias-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    padding: 14px 20px;
+    border-radius: 50px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    user-select: none;
+    z-index: 10000;
+  }
+  #sugerencias-panel {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    width: 90vw;
+    max-height: 50vh;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    overflow-y: auto;
+    padding: 10px 12px;
+    display: none;
+    z-index: 10001;
+  }
+  #sugerencias-panel h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #005f99;
+  }
+  #sugerencias-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  #sugerencias-list li {
+    border-bottom: 1px solid #eee;
+    padding: 6px 0;
+    word-wrap: break-word;
+  }
+  #sugerencias-list li:last-child {
+    border-bottom: none;
+  }
+  .sugerencia-nombre {
+    font-weight: bold;
+    color: #005f99;
+    margin-right: 5px;
+  }
+  #sugerencia-form textarea {
+    width: 100%;
+    height: 60px;
+    resize: vertical;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 6px;
+    box-sizing: border-box;
+  }
+  #sugerencia-form button {
+    float: right;
+    margin-top: -8px;
+  }
+  .seccion {
+    border: 1px solid #ddd;
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+  }
+  .seccion-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    outline: none;
+  }
+  img.editable-image {
+    max-width: 100%;
+    margin: 10px 0;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    cursor: grab;
+    position: relative;
+  }
+  img.editable-image.dragging {
+    opacity: 0.7;
+    cursor: grabbing;
+  }
+  @media (max-width: 480px) {
+    #toolbar {
+      flex-direction: column;
+      align-items: center;
+    }
+    #editor-menu {
+      flex-direction: column;
+      align-items: center;
+    }
+    #page-title {
+      font-size: 1.5em;
+    }
+    #username-display {
+      font-size: 0.9em;
+    }
+    #sugerencias-panel {
+      width: 90vw;
+      max-height: 50vh;
+      bottom: 70px;
+      right: 5vw;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login pantalla -->
+<div id="login-screen">
+  <div id="login-box">
+    <h2>Iniciar sesión</h2>
+    <input type="text" id="login-name" placeholder="Nombre de usuario" autocomplete="off" />
+    <input type="password" id="login-pass" placeholder="Contraseña" autocomplete="off" />
+    <button id="login-btn">Entrar</button>
+  </div>
+</div>
+
+<header>
+  <div id="page-title" contenteditable="false" title="Haz clic en editar para modificar el título">Sala de Juegos</div>
+  <div id="username-display">Invitado</div>
+</header>
+
+<div id="toolbar" style="display:none;">
+  <button id="change-name-btn">Cambiar nombre</button>
+  <button id="edit-btn">Editar</button>
+</div>
+
+<div id="editor-menu" style="display:none;">
+  <button id="new-section-btn">➕ Nueva Sección</button>
+  <button id="upload-btn">Subir Imagen/GIF</button>
+  <button id="insert-link-btn">Insertar enlace</button>
+  <button id="rotate-img-btn">Rotar imagen</button>
+  <button id="resize-img-btn">Cambiar tamaño</button>
+  <button id="clear-format-btn">Limpiar formato</button>
+  <button id="export-btn">Exportar HTML</button>
+</div>
+
+<div id="content" contenteditable="false" tabindex="0">
+  <p>Bienvenido a la Sala de Juegos.</p>
+  <p>Si sos el usuario <b>eze1339</b>, podés entrar en modo edición con el botón "Editar".</p>
+</div>
+
+<input type="file" id="image-input" accept="image/*" style="display:none;" />
+
+<button id="sugerencias-btn" title="Abrir sugerencias">Sugerencias</button>
+
+<div id="sugerencias-panel">
+  <h3>Sugerencias</h3>
+  <ul id="sugerencias-list"></ul>
+  <form id="sugerencia-form">
+    <textarea placeholder="Escribe tu recomendación..." maxlength="300"></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  // Constantes para usuario y contraseña editor
+  const EDITOR_USER = 'eze1339';
+  const EDITOR_PASS = 'eze133998';
+
+  // Elementos
+  const loginScreen = document.getElementById('login-screen');
+  const loginNameInput = document.getElementById('login-name');
+  const loginPassInput = document.getElementById('login-pass');
+  const loginBtn = document.getElementById('login-btn');
+
+  const usernameDisplay = document.getElementById('username-display');
+  const changeNameBtn = document.getElementById('change-name-btn');
+  const editBtn = document.getElementById('edit-btn');
+  const resizeImgBtn = document.getElementById('resize-img-btn');
+
+  const editorMenu = document.getElementById('editor-menu');
+  const content = document.getElementById('content');
+  const pageTitle = document.getElementById('page-title');
+
+  const imageInput = document.getElementById('image-input');
+  const uploadBtn = document.getElementById('upload-btn');
+  const newSectionBtn = document.getElementById('new-section-btn');
+  const insertLinkBtn = document.getElementById('insert-link-btn');
+  const rotateImgBtn = document.getElementById('rotate-img-btn');
+  const clearFormatBtn = document.getElementById('clear-format-btn');
+  const exportBtn = document.getElementById('export-btn');
+
+  const sugerenciasBtn = document.getElementById('sugerencias-btn');
+  const sugerenciasPanel = document.getElementById('sugerencias-panel');
+  const sugerenciasList = document.getElementById('sugerencias-list');
+  const sugerenciaForm = document.getElementById('sugerencia-form');
+  const sugerenciaTextarea = sugerenciaForm.querySelector('textarea');
+
+  // Estado
+  let username = null;
+  let userPass = null;
+  let loggedIn = false;
+  let editMode = false;
+
+  // LocalStorage Keys
+  const LS_USER_KEY = 'salaDeJuegos_user';
+  const LS_PASS_KEY = 'salaDeJuegos_pass';
+  const LS_CONTENT_KEY = 'salaDeJuegos_content';
+  const LS_TITLE_KEY = 'salaDeJuegos_title';
+  const LS_SUGERENCIAS_KEY = 'salaDeJuegos_sugerencias';
+
+  // Mostrar/ocultar login
+  function showLogin() {
+    loginScreen.style.display = 'flex';
+    loginNameInput.focus();
+  }
+  function hideLogin() {
+    loginScreen.style.display = 'none';
+  }
+
+  // Guardar usuario y pass en localStorage
+  function saveUser(name, pass) {
+    localStorage.setItem(LS_USER_KEY, name);
+    localStorage.setItem(LS_PASS_KEY, pass);
+    username = name;
+    userPass = pass;
+    usernameDisplay.textContent = username; // Actualiza el nombre visible
+  }
+
+  // Cargar contenido guardado
+  function loadContent() {
+    const savedContent = localStorage.getItem(LS_CONTENT_KEY);
+    const savedTitle = localStorage.getItem(LS_TITLE_KEY);
+
+    if (savedContent) content.innerHTML = savedContent;
+    if (savedTitle) pageTitle.textContent = savedTitle;
+  }
+
+  // Guardar contenido en localStorage
+  function saveContent() {
+    localStorage.setItem(LS_CONTENT_KEY, content.innerHTML);
+    localStorage.setItem(LS_TITLE_KEY, pageTitle.textContent);
+  }
+
+  // Manejar login
+  loginBtn.addEventListener('click', () => {
+    const name = loginNameInput.value.trim();
+    const pass = loginPassInput.value.trim();
+
+    if (name === EDITOR_USER && pass === EDITOR_PASS) {
+      saveUser(name, pass);
+      loggedIn = true;
+      hideLogin();
+      showEditorUI();
+      loadContent();
+    } else {
+      alert('Usuario o contraseña incorrectos.');
+    }
+  });
+
+  // Verificar sesión guardada
+  function checkSavedSession() {
+    const savedUser = localStorage.getItem(LS_USER_KEY);
+    const savedPass = localStorage.getItem(LS_PASS_KEY);
+
+    if (savedUser === EDITOR_USER && savedPass === EDITOR_PASS) {
+      username = savedUser;
+      userPass = savedPass;
+      loggedIn = true;
+      hideLogin();
+      showEditorUI();
+      loadContent();
+    } else {
+      showLogin();
+    }
+  }
+
+  // Mostrar UI de editor
+  function showEditorUI() {
+    const toolbar = document.getElementById('toolbar');
+    toolbar.style.display = 'block'; // Mostrar la barra de herramientas
+    usernameDisplay.textContent = username;
+  }
+
+  // Cambiar modo edición
+  editBtn.addEventListener('click', () => {
+    editMode = !editMode;
+    content.setAttribute('contenteditable', editMode);
+    pageTitle.setAttribute('contenteditable', editMode);
+    editorMenu.style.display = editMode ? 'flex' : 'none';
+    editBtn.textContent = editMode ? 'Guardar cambios' : 'Editar';
+    if (!editMode) saveContent();
+  });
+
+  // Cambiar nombre de usuario
+  changeNameBtn.addEventListener('click', () => {
+    const newName = prompt('Ingresa tu nuevo nombre de usuario:');
+    if (newName && newName.trim()) {
+      username = newName.trim();
+      usernameDisplay.textContent = username;
+      localStorage.setItem(LS_USER_KEY, username);
+    }
+  });
+
+  // Subir imagen
+  uploadBtn.addEventListener('click', () => {
+    imageInput.click();
+  });
+  imageInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.classList.add('editable-image');
+        content.appendChild(img);
+        saveContent();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Insertar enlace
+  insertLinkBtn.addEventListener('click', () => {
+    const url = prompt('Ingresa la URL:');
+    if (url) {
+      const link = document.createElement('a');
+      link.href = url;
+      link.textContent = url;
+      link.target = '_blank';
+      content.appendChild(link);
+      content.appendChild(document.createElement('br'));
+      saveContent();
+    }
+  });
+
+  // Rotar imagen
+  rotateImgBtn.addEventListener('click', () => {
+    const img = document.querySelector('.editable-image');
+    if (img) {
+      const currentRotation = img.style.transform.replace(/[^0-9]/g, '') || 0;
+      const newRotation = parseInt(currentRotation) + 90;
+      img.style.transform = `rotate(${newRotation}deg)`;
+      saveContent();
+    }
+  });
+
+  // Limpiar formato
+  clearFormatBtn.addEventListener('click', () => {
+    document.execCommand('removeFormat', false, null);
+    saveContent();
+  });
+
+  // Nueva sección
+  newSectionBtn.addEventListener('click', () => {
+    const section = document.createElement('div');
+    section.classList.add('seccion');
+    const title = document.createElement('div');
+    title.classList.add('seccion-title');
+    title.textContent = 'Nueva sección';
+    section.appendChild(title);
+    content.appendChild(section);
+    saveContent();
+  });
+
+  // Exportar HTML
+  exportBtn.addEventListener('click', () => {
+    const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'pagina.html';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Cambiar tamaño de imagen
+  resizeImgBtn.addEventListener('click', () => {
+    const img = document.querySelector('.editable-image');
+    if (img) {
+      const width = prompt('Ingresa el nuevo ancho de la imagen (en px):', img.width);
+      const height = prompt('Ingresa el nuevo alto de la imagen (en px):', img.height);
+      if (width && height) {
+        img.width = parseInt(width);
+        img.height = parseInt(height);
+        saveContent();
+      }
+    } else {
+      alert('No hay imágenes seleccionadas.');
+    }
+  });
+
+  // Sugerencias
+  sugerenciasBtn.addEventListener('click', () => {
+    sugerenciasPanel.style.display = sugerenciasPanel.style.display === 'none' ? 'block' : 'none';
+  });
+
+  sugerenciaForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const sugerencia = sugerenciaTextarea.value.trim();
+    if (sugerencia) {
+      const li = document.createElement('li');
+      const nombreSpan = document.createElement('span');
+      nombreSpan.className = 'sugerencia-nombre';
+      nombreSpan.textContent = username + ': ';
+      li.appendChild(nombreSpan);
+      li.append(sugerencia);
+      sugerenciasList.appendChild(li);
+      sugerenciaTextarea.value = '';
+      localStorage.setItem(LS_SUGERENCIAS_KEY, JSON.stringify([...sugerenciasList.children].map(li => `${li.querySelector('.sugerencia-nombre').textContent}${li.textContent}`)));
+    }
+  });
+
+  // Cargar sugerencias guardadas
+  const savedSugerencias = JSON.parse(localStorage.getItem(LS_SUGERENCIAS_KEY)) || [];
+  savedSugerencias.forEach(sugerencia => {
+    const li = document.createElement('li');
+    const [nombre, ...texto] = sugerencia.split(': ');
+    const nombreSpan = document.createElement('span');
+    nombreSpan.className = 'sugerencia-nombre';
+    nombreSpan.textContent = nombre + ': ';
+    li.appendChild(nombreSpan);
+    li.append(texto.join(': '));
+    sugerenciasList.appendChild(li);
+  });
+
+  // Inicializar
+  checkSavedSession();
+})();
+</script>
+
+</body>
+</html>

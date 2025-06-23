@@ -1,0 +1,274 @@
+/* Estilos generales */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  color: #222;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#page-title {
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  outline: none;
+  color: #005f99;
+  transition: color 0.3s ease;
+}
+
+#page-title:hover {
+  color: #00406b;
+}
+
+#username-display {
+  font-size: 1em;
+  color: #555;
+  margin-top: 5px;
+}
+
+button {
+  background: #005f99;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 5px;
+  user-select: none;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #00406b;
+}
+
+#content {
+  flex-grow: 1;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 15px;
+  min-height: 300px;
+  overflow-wrap: break-word;
+  white-space: normal;
+  outline: none;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  position: relative;
+}
+
+#content[contenteditable="true"] {
+  user-select: text;
+  cursor: text;
+  border-color: #005f99;
+}
+
+#toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+#editor-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+#login-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+#login-box {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 8px;
+  width: 280px;
+  box-shadow: 0 0 12px #333;
+  text-align: center;
+}
+
+#login-box h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #005f99;
+}
+
+#login-box input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #aaa;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+
+#login-box button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background: #005f99;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#login-box button:hover {
+  background: #00406b;
+}
+
+#sugerencias-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #007bff;
+  padding: 14px 20px;
+  border-radius: 50px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  user-select: none;
+  z-index: 10000;
+}
+
+#sugerencias-panel {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  width: 320px;
+  max-height: 400px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+  overflow-y: auto;
+  padding: 10px 12px;
+  display: none;
+  z-index: 10001;
+}
+
+#sugerencias-panel h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  color: #005f99;
+}
+
+#sugerencias-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+#sugerencias-list li {
+  border-bottom: 1px solid #eee;
+  padding: 6px 0;
+  word-wrap: break-word;
+}
+
+#sugerencias-list li:last-child {
+  border-bottom: none;
+}
+
+.sugerencia-nombre {
+  font-weight: bold;
+  color: #005f99;
+  margin-right: 5px;
+}
+
+#sugerencia-form textarea {
+  width: 100%;
+  height: 60px;
+  resize: vertical;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+#sugerencia-form button {
+  float: right;
+  margin-top: -8px;
+}
+
+.seccion {
+  border: 1px solid #ddd;
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+}
+
+.seccion-title {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 8px;
+  outline: none;
+}
+
+img.editable-image {
+  max-width: 100%;
+  margin: 10px 0;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: grab;
+  position: relative;
+}
+
+img.editable-image.dragging {
+  opacity: 0.7;
+  cursor: grabbing;
+}
+
+@media (max-width: 480px) {
+  #toolbar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #editor-menu {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #page-title {
+    font-size: 1.5em;
+  }
+
+  #username-display {
+    font-size: 0.9em;
+  }
+
+  #sugerencias-panel {
+    width: 90vw;
+    max-height: 50vh;
+    bottom: 70px;
+    right: 5vw;
+  }
+}
